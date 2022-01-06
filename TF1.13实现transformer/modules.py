@@ -74,8 +74,8 @@ def multihead_attention(queries,
     applies multi-head attention
     :param queries: shape=[batch_size, seq_len_q, d_model]
     :param keys: shape=[batch_size, seq_len_k, d_model]  keys = values
-    :param d_model: num_units
-    :param num_heads: number of heads
+    :param d_model: 词向量的长度
+    :param num_heads: head的数量
     :param dropout_rate:
     :param is_training: train or test
     :param causality: 是否mask未来的信息
@@ -94,7 +94,7 @@ def multihead_attention(queries,
         Q_ = tf.concat(tf.split(Q, num_heads, axis=2), axis=0) # shape=[batch_size*num_heads, seq_len_q, d_model/num_heads]
         K_ = tf.concat(tf.split(K, num_heads, axis=2), axis=0) # shape=[batch_size*num_heads, seq_len_k, d_model/num_heads]
         V_ = tf.concat(tf.split(V, num_heads, axis=2), axis=0) # shape=[batch_size*num_heads, seq_len_v, d_model/num_heads]
-        # multiplication
+        # Q * transpose(K)
         outputs = tf.matmul(Q_, tf.transpose(K_, [0, 2, 1])) # shape=[batch_size*num_heads, seq_len_q, seq_len_k]
         # scale
         outputs = outputs / (K_.get_shape().as_list()[-1] ** 0.5)
